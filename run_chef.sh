@@ -46,7 +46,7 @@ NODENAME=$(hostname)
 # Strip off any domain name from incorrectly set hostnames
 NODENAME=${NODENAME%%.*}
 
-THINGS_TO_COMBINE="nodes roles data_bags handlers"
+THINGS_TO_COMBINE="nodes roles environments data_bags handlers"
 
 CHEF_ROOT="/var/chef-solo"
 
@@ -373,6 +373,12 @@ while true; do
         
         DEBUGLOG=
          [[ -n $DEBUG ]] && DEBUGLOG="-l debug"
+        if [ -z "${CHEF_ENVIRONMENT}" ]; then
+            FNAME="$NODEPATH/$NODENAME.json"
+            CHEF_ENVIRONMENT=$(ruby -e "require 'rubygems';require 'json';puts JSON.parse(File.read('$FNAME'))['chef_environment']")
+            export CHEF_ENVIRONMENT
+        fi
+        echo "CHEF_ENVIRONMENT: $CHEF_ENVIRONMENT"
         CMD="chef-solo -c solo.rb -j $NODEPATH/$NODENAME.json -N $NODENAME -L $LOGFILE $DEBUGLOG"
         log "Running chef-solo as $CMD"
         $CMD
