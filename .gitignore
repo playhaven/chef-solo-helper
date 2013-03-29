@@ -2,6 +2,7 @@
 chef-solo.log
 config.sh
 config.rb
+set_release.sh
 id_rsa_chef
 chef.key
 *.swp
