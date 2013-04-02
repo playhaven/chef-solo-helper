@@ -164,7 +164,8 @@ update_git() {
         log "Pulling checkout $CO_DIR"
         pushd $CHECKOUTS_DIR/$CO_DIR > /dev/null
         git remote set-url origin $CO_REPO
-        git fetch --tags origin 2>&1 || error "Failed git fetch"
+        git fetch origin 2>&1 || error "Failed git fetch"
+        git fetch --tags origin 2>&1 || error "Failed git fetch tags"
         local local_branch=$(git rev-parse --verify --symbolic-full-name $CO_BRANCH | grep -v 'refs/tags/' 2> /dev/null)
         # no branch or bad commit
         if [[ $PIPESTATUS -ne 0 ]]; then
