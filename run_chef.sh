@@ -363,6 +363,7 @@ if [[ -z $RUN_ONCE || -n $RUN_ONCE_SPLAY ]]; then
     sleep $DELAY
 fi
 
+EXTCODE=0
 while true; do
     if lock; then
         # Update repos
@@ -386,10 +387,11 @@ while true; do
         CMD="chef-solo -c solo.rb -j $NODEPATH/$NODENAME.json -N $NODENAME -L $LOGFILE $DEBUGLOG"
         log "Running chef-solo as $CMD"
         $CMD
+        EXTCODE=$?
         unlock
     fi
     # Quit if we're only running once
-    [[ -n $RUN_ONCE ]] && exit
+    [[ -n $RUN_ONCE ]] && exit $EXTCODE
     # Otherwise, wait and do it all over
     log "Sleeping for $INTERVAL seconds..."
     sleep $INTERVAL
