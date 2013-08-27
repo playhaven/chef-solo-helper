@@ -151,9 +151,16 @@ update_checkout() {
     if [[ $CO_VCS = 'svn' ]]; then
         update_svn
     fi
+    if [[ $CO_VCS = 'rsync' ]]; then
+       update_rsync
+    fi
 
     echo $CO_COOKBOOK_DIR >> $CHEF_ROOT/.cookbook-order
     popd > /dev/null
+}
+
+update_rsync() {
+   rsync --itemize-changes --archive --delete --whole-file $CO_REPO/ $CHECKOUTS_DIR/$CO_DIR/;
 }
 
 update_git() {
